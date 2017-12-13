@@ -81,8 +81,8 @@ int main(void)
 	//mlp->setBackpropMomentumScale(0.1);
 
 	// Neural network elements
-	const int num_input_neurons = dove.cols;
-	const int num_output_neurons = 2;
+	const int num_input_neurons = dove.cols; // One input neuron per grayscale pixel
+	const int num_output_neurons = 2; // 4 images to classify, so number of bits needed is ceiling(ln(n)/ln(2))
 	const int num_hidden_neurons = static_cast<int>(sqrtf(image_width*image_height*num_output_neurons));
 	Mat layersSize = Mat(3, 1, CV_16UC1);
 	layersSize.row(0) = Scalar(num_input_neurons);
@@ -96,7 +96,7 @@ int main(void)
 	mlp->setTermCriteria(termCrit);
 	mlp->setTrainMethod(ANN_MLP::TrainingMethods::BACKPROP, 0.0001);
 
-	Mat output_training_data = Mat(1, 2, CV_32FC1).clone();
+	Mat output_training_data = Mat(1, num_output_neurons, CV_32FC1).clone();
 
 	// Train the network once
 	output_training_data.at<float>(0, 0) = 0;
