@@ -165,28 +165,28 @@ int main(void)
 		Mat result;
 		mlp->predict(flt_dove_noise, result);
 
-		if (round_float(result.at<float>(0, 0)) < 0.5 && round_float(result.at<float>(0, 1) < 0.5))
+		if ((result.at<float>(0, 0)) < 0.5 && (result.at<float>(0, 1) < 0.5))
 			num_successes++;
 		else
 			num_failures++;
 
 		mlp->predict(flt_flowers_noise, result);
 
-		if (round_float(result.at<float>(0, 0)) < 0.5 && round_float(result.at<float>(0, 1) > 0.5))
+		if ((result.at<float>(0, 0)) < 0.5 && (result.at<float>(0, 1) > 0.5))
 			num_successes++;
 		else
 			num_failures++;
 
 		mlp->predict(flt_peacock_noise, result);
 
-		if (round_float(result.at<float>(0, 0)) > 0.5 && round_float(result.at<float>(0, 1) < 0.5))
+		if ((result.at<float>(0, 0)) > 0.5 && (result.at<float>(0, 1) < 0.5))
 			num_successes++;
 		else
 			num_failures++;
 
 		mlp->predict(flt_statue_noise, result);
 
-		if (round_float(result.at<float>(0, 0)) > 0.5 && round_float(result.at<float>(0, 1) > 0.5))
+		if ((result.at<float>(0, 0)) > 0.5 && round_float(result.at<float>(0, 1) > 0.5))
 			num_successes++;
 		else
 			num_failures++;
