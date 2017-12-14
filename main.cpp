@@ -99,8 +99,8 @@ int main(void)
 	Mat output_training_data = Mat(1, num_output_neurons, CV_32FC1).clone();
 
 	// Train the network once
-	output_training_data.at<float>(0, 0) = 0;
-	output_training_data.at<float>(0, 1) = 0;
+	output_training_data.at<float>(0, 0) = 0.1f;
+	output_training_data.at<float>(0, 1) = 0.1f;
 	Ptr<TrainData> trainingData = TrainData::create(flt_dove, SampleTypes::ROW_SAMPLE, output_training_data);
 	mlp->train(trainingData);
 
