@@ -186,7 +186,7 @@ int main(void)
 
 		mlp->predict(flt_statue_noise, result);
 
-		if ((result.at<float>(0, 0)) > 0.5 && round_float(result.at<float>(0, 1) > 0.5))
+		if ((result.at<float>(0, 0)) > 0.5 && (result.at<float>(0, 1) > 0.5))
 			num_successes++;
 		else
 			num_failures++;
