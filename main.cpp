@@ -99,10 +99,10 @@ int main(void)
 	Mat output_training_data = Mat(1, num_output_neurons, CV_32FC1).clone();
 
 	// Train the network once
-	output_training_data.at<float>(0, 0) = 0.1f;
-	output_training_data.at<float>(0, 1) = 0.1f;
+	output_training_data.at<float>(0, 0) = -1;
+	output_training_data.at<float>(0, 1) = -1;
 	Ptr<TrainData> trainingData = TrainData::create(flt_dove, SampleTypes::ROW_SAMPLE, output_training_data);
-	mlp->train(trainingData);
+	mlp->train(trainingData, ANN_MLP::TrainFlags::NO_INPUT_SCALE | ANN_MLP::TrainFlags::NO_OUTPUT_SCALE);
 
 	// Train the network again and again
 	for (int i = 1; i < 1000; i++)
@@ -121,28 +121,28 @@ int main(void)
 		add_noise(flt_statue_noise, 0.1f);
 
 		// Train for image 1
-		output_training_data.at<float>(0, 0) = 0.1f;
-		output_training_data.at<float>(0, 1) = 0.1f;
+		output_training_data.at<float>(0, 0) = -1;
+		output_training_data.at<float>(0, 1) = -1;
 		trainingData = TrainData::create(flt_dove_noise, SampleTypes::ROW_SAMPLE, output_training_data);
-		mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS);
+		mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS | ANN_MLP::TrainFlags::NO_INPUT_SCALE | ANN_MLP::TrainFlags::NO_OUTPUT_SCALE);
 
 		// Train for image 2
-		output_training_data.at<float>(0, 0) = 0.1f;
-		output_training_data.at<float>(0, 1) = 0.9f;
+		output_training_data.at<float>(0, 0) = -1;
+		output_training_data.at<float>(0, 1) = 1;
 		trainingData = TrainData::create(flt_flowers_noise, SampleTypes::ROW_SAMPLE, output_training_data);
-		mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS);
+		mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS | ANN_MLP::TrainFlags::NO_INPUT_SCALE | ANN_MLP::TrainFlags::NO_OUTPUT_SCALE);
 
 		// Train for image 3
-		output_training_data.at<float>(0, 0) = 0.9f;
-		output_training_data.at<float>(0, 1) = 0.1f;
+		output_training_data.at<float>(0, 0) = 1;
+		output_training_data.at<float>(0, 1) = -1;
 		trainingData = TrainData::create(flt_peacock_noise, SampleTypes::ROW_SAMPLE, output_training_data);
-		mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS);
+		mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS | ANN_MLP::TrainFlags::NO_INPUT_SCALE | ANN_MLP::TrainFlags::NO_OUTPUT_SCALE);
 
 		// Train for image 4
-		output_training_data.at<float>(0, 0) = 0.9f;
-		output_training_data.at<float>(0, 1) = 0.9f;
+		output_training_data.at<float>(0, 0) = 1;
+		output_training_data.at<float>(0, 1) = 1;
 		trainingData = TrainData::create(flt_statue_noise, SampleTypes::ROW_SAMPLE, output_training_data);
-		mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS);
+		mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS | ANN_MLP::TrainFlags::NO_INPUT_SCALE | ANN_MLP::TrainFlags::NO_OUTPUT_SCALE);
 	}
 
 	int num_tests = 100;
@@ -165,28 +165,28 @@ int main(void)
 		Mat result;
 		mlp->predict(flt_dove_noise, result);
 
-		if ((result.at<float>(0, 0)) < 0.5 && (result.at<float>(0, 1) < 0.5))
+		if ((result.at<float>(0, 0)) < 0 && (result.at<float>(0, 1) < 0))
 			num_successes++;
 		else
 			num_failures++;
 
 		mlp->predict(flt_flowers_noise, result);
 
-		if ((result.at<float>(0, 0)) < 0.5 && (result.at<float>(0, 1) > 0.5))
+		if ((result.at<float>(0, 0)) < 0 && (result.at<float>(0, 1) > 0))
 			num_successes++;
 		else
 			num_failures++;
 
 		mlp->predict(flt_peacock_noise, result);
 
-		if ((result.at<float>(0, 0)) > 0.5 && (result.at<float>(0, 1) < 0.5))
+		if ((result.at<float>(0, 0)) > 0 && (result.at<float>(0, 1) < 0))
 			num_successes++;
 		else
 			num_failures++;
 
 		mlp->predict(flt_statue_noise, result);
 
-		if ((result.at<float>(0, 0)) > 0.5 && (result.at<float>(0, 1) > 0.5))
+		if ((result.at<float>(0, 0)) > 0 && (result.at<float>(0, 1) > 0))
 			num_successes++;
 		else
 			num_failures++;
