@@ -77,9 +77,6 @@ int main(void)
 
 	Ptr<ANN_MLP> mlp = ANN_MLP::create();
 
-	// Slow the learning process
-	//mlp->setBackpropMomentumScale(0.1);
-
 	// Neural network elements
 	const int num_input_neurons = dove.cols; // One input neuron per grayscale pixel
 	const int num_output_neurons = 2; // 4 images to classify, so number of bits needed is ceiling(ln(n)/ln(2))
