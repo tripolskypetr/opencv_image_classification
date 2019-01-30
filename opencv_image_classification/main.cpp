@@ -1,5 +1,3 @@
-#include <QApplication>
-
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <iomanip>
@@ -35,7 +33,7 @@ void add_noise(Mat &mat, float scale)
 
 int main(int argc, char *argv[])
 {
-    const int image_width = 64;
+        const int image_width = 64;
         const int image_height = 64;
 
         // Read in 64 row x 64 column images
@@ -109,36 +107,16 @@ int main(int argc, char *argv[])
 
             // Make noisy version of images to be used as network input
             Mat flt_dove_noise = flt_dove.clone();
-            Mat flt_flowers_noise = flt_flowers.clone();
-            Mat flt_peacock_noise = flt_peacock.clone();
-            Mat flt_statue_noise = flt_statue.clone();
             add_noise(flt_dove_noise, 0.1f);
-            add_noise(flt_flowers_noise, 0.1f);
-            add_noise(flt_peacock_noise, 0.1f);
-            add_noise(flt_statue_noise, 0.1f);
+
+
+            /*imshow("flt_dove_noise",flt_dove_noise.reshape(1,64));
+            waitKey(0);*/
 
             // Train for image 1
             output_training_data.at<float>(0, 0) = -1;
             output_training_data.at<float>(0, 1) = -1;
             trainingData = TrainData::create(flt_dove_noise, SampleTypes::ROW_SAMPLE, output_training_data);
-            mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS | ANN_MLP::TrainFlags::NO_INPUT_SCALE | ANN_MLP::TrainFlags::NO_OUTPUT_SCALE);
-
-            // Train for image 2
-            output_training_data.at<float>(0, 0) = -1;
-            output_training_data.at<float>(0, 1) = 1;
-            trainingData = TrainData::create(flt_flowers_noise, SampleTypes::ROW_SAMPLE, output_training_data);
-            mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS | ANN_MLP::TrainFlags::NO_INPUT_SCALE | ANN_MLP::TrainFlags::NO_OUTPUT_SCALE);
-
-            // Train for image 3
-            output_training_data.at<float>(0, 0) = 1;
-            output_training_data.at<float>(0, 1) = -1;
-            trainingData = TrainData::create(flt_peacock_noise, SampleTypes::ROW_SAMPLE, output_training_data);
-            mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS | ANN_MLP::TrainFlags::NO_INPUT_SCALE | ANN_MLP::TrainFlags::NO_OUTPUT_SCALE);
-
-            // Train for image 4
-            output_training_data.at<float>(0, 0) = 1;
-            output_training_data.at<float>(0, 1) = 1;
-            trainingData = TrainData::create(flt_statue_noise, SampleTypes::ROW_SAMPLE, output_training_data);
             mlp->train(trainingData, ANN_MLP::TrainFlags::UPDATE_WEIGHTS | ANN_MLP::TrainFlags::NO_INPUT_SCALE | ANN_MLP::TrainFlags::NO_OUTPUT_SCALE);
         }
 
@@ -151,45 +129,23 @@ int main(int argc, char *argv[])
         {
             // Use noisy input images
             Mat flt_dove_noise = flt_dove.clone();
-            Mat flt_flowers_noise = flt_flowers.clone();
-            Mat flt_peacock_noise = flt_peacock.clone();
-            Mat flt_statue_noise = flt_statue.clone();
             add_noise(flt_dove_noise, 0.1f);
-            add_noise(flt_flowers_noise, 0.1f);
-            add_noise(flt_peacock_noise, 0.1f);
-            add_noise(flt_statue_noise, 0.1f);
 
             Mat result;
             mlp->predict(flt_dove_noise, result);
 
             if ((result.at<float>(0, 0)) < 0 && (result.at<float>(0, 1) < 0))
+            {
                 num_successes++;
+            }
             else
+            {
                 num_failures++;
+            }
 
-            mlp->predict(flt_flowers_noise, result);
-
-            if ((result.at<float>(0, 0)) < 0 && (result.at<float>(0, 1) > 0))
-                num_successes++;
-            else
-                num_failures++;
-
-            mlp->predict(flt_peacock_noise, result);
-
-            if ((result.at<float>(0, 0)) > 0 && (result.at<float>(0, 1) < 0))
-                num_successes++;
-            else
-                num_failures++;
-
-            mlp->predict(flt_statue_noise, result);
-
-            if ((result.at<float>(0, 0)) > 0 && (result.at<float>(0, 1) > 0))
-                num_successes++;
-            else
-                num_failures++;
         }
 
-        cout << "Success rate: " << 100.0*static_cast<double>(num_successes) / static_cast<double>(num_tests * 4) << "%" << endl;
+        cout << "Success rate: " << 100.0*static_cast<double>(num_successes) / static_cast<double>(num_tests) << "%" << endl;
 
         return 0;
 }
